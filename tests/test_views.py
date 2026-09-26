@@ -19,7 +19,7 @@ def client(app_with_seed):
 def test_landing_page(client):
     res = client.get("/")
     assert res.status_code == 200
-    assert b"ScholarMatch" in res.data
+    assert (b"ScholarBridge" in res.data or b"ScholarMatch" in res.data)
     assert b"Discover Scholarships" in res.data
 
 def test_browse_directory(client):

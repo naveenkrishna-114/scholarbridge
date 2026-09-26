@@ -77,6 +77,6 @@ if __name__ == "__main__":
                 break
 
     print(f"\n=======================================================")
-    print(f" Starting ScholarMatch Server at http://{host}:{port}")
+    print(f" Starting ScholarBridge Server at http://{host}:{port}")
     print(f"=======================================================\n")
     app.run(host=host, port=port, debug=app.config["DEBUG"])

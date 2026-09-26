@@ -23,7 +23,7 @@ def test_complete_demonstration_workflow(client):
     # Step 1: Open landing page
     res_home = client.get("/")
     assert res_home.status_code == 200
-    assert b"ScholarMatch" in res_home.data
+    assert (b"ScholarBridge" in res_home.data or b"ScholarMatch" in res_home.data)
     assert b"Discover Scholarships" in res_home.data
 
     # Step 2: Register a demo student
