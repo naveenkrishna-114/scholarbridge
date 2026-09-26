@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Login | Personalized Scholarship Recommendation System{% endblock %}
+{% block title %}Login | ScholarMatch AI{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -11,15 +11,15 @@
                     <div class="rounded-circle bg-primary bg-opacity-10 text-primary mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 56px; height: 56px;">
                         <i class="bi bi-person-fill fs-2"></i>
                     </div>
-                    <h3 class="fw-bold">Student Login</h3>
+                    <h3 class="fw-bold">Welcome Back</h3>
                     <p class="text-muted small">Sign in to access your recommendations and bookmarks</p>
                 </div>
 
-                <form method="POST" action="{{ url_for('views.login_post') }}">
+                <form method="POST" action="{{ url_for('views.login_post') }}" id="loginForm">
                     <div class="mb-3">
                         <label for="email" class="form-label small fw-semibold">Email Address</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
                             <input type="email" class="form-control" id="email" name="email" required placeholder="student@example.com">
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="mb-3">
                         <label for="password" class="form-label small fw-semibold">Password</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
                         </div>
                     </div>
@@ -41,14 +41,49 @@
                     Don't have an account? <a href="{{ url_for('views.register_view') }}" class="fw-semibold text-primary">Register here</a>
                 </div>
 
-                <!-- Demo Credentials helper for Hackathon evaluation -->
-                <div class="mt-4 p-3 bg-light rounded border text-start small">
-                    <strong><i class="bi bi-key-fill text-warning me-1"></i> Demo Evaluation Accounts:</strong>
-                    <div class="mt-1 text-muted">Student: <code>aarav.sharma@example.com</code> / <code>Password123!</code></div>
-                    <div class="text-muted">Admin: <code>vikram.admin@example.com</code> / <code>Password123!</code></div>
+                <!-- 1-Click Demo Evaluation Credential Helpers for Hackathon Evaluation -->
+                <div class="mt-4 p-3 bg-light rounded-3 border text-start small">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-dark"><i class="bi bi-key-fill text-warning me-1"></i> 1-Click Evaluation Logins:</strong>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1" id="btnFillStudent">
+                            <i class="bi bi-mortarboard me-1"></i> Student Demo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger flex-grow-1" id="btnFillAdmin">
+                            <i class="bi bi-shield-lock me-1"></i> Admin Demo
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const fillStudentBtn = document.getElementById("btnFillStudent");
+    if (fillStudentBtn) {
+        fillStudentBtn.addEventListener("click", () => {
+            emailInput.value = "aarav.sharma@example.com";
+            passwordInput.value = "Password123!";
+            if (window.showToast) window.showToast("Student credentials filled!", "info");
+        });
+    }
+
+    const fillAdminBtn = document.getElementById("btnFillAdmin");
+    if (fillAdminBtn) {
+        fillAdminBtn.addEventListener("click", () => {
+            emailInput.value = "vikram.admin@example.com";
+            passwordInput.value = "Password123!";
+            if (window.showToast) window.showToast("Admin credentials filled!", "warning");
+        });
+    }
+});
+</script>
 {% endblock %}

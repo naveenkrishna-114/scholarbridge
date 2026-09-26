@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Register | Personalized Scholarship Recommendation System{% endblock %}
+{% block title %}Register | ScholarMatch AI{% endblock %}
 
 {% block content %}
 <div class="container py-5">
@@ -19,7 +19,7 @@
                     <div class="mb-3">
                         <label for="name" class="form-label small fw-semibold">Full Name</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
                             <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Priya Sharma">
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="mb-3">
                         <label for="email" class="form-label small fw-semibold">Email Address</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
                             <input type="email" class="form-control" id="email" name="email" required placeholder="priya@example.com">
                         </div>
                     </div>
@@ -35,13 +35,13 @@
                     <div class="mb-3">
                         <label for="password" class="form-label small fw-semibold">Password (min 6 characters)</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password" minlength="6" required placeholder="••••••••">
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 py-2 mb-3 fw-semibold">
-                        <i class="bi bi-check-lg me-1"></i> Create Account
+                        <i class="bi bi-rocket-takeoff me-1"></i> Register Free
                     </button>
                 </form>
 

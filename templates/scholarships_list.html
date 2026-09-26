@@ -4,18 +4,26 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="mb-4">
-        <h2 class="fw-bold mb-1">Scholarship Directory</h2>
-        <p class="text-muted small mb-0">Browse and search curated, active scholarships across central, state, and corporate foundations.</p>
+    <!-- Header with live stats -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Scholarship Directory</h2>
+            <p class="text-muted small mb-0">Browse and search curated, active scholarships across national, state, and foundation grantors.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill fw-semibold" id="liveResultCount">
+                {{ scholarships|length }} Scholarships Available
+            </span>
+        </div>
     </div>
 
-    <!-- Search & Filter Form -->
+    <!-- Search & Filter Card -->
     <div class="card custom-card p-3 mb-4">
-        <form method="GET" action="{{ url_for('views.explore_scholarships') }}" class="row g-2 align-items-center">
+        <form method="GET" action="{{ url_for('views.explore_scholarships') }}" class="row g-2 align-items-center mb-3">
             <div class="col-md-5">
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" name="search" value="{{ search_term }}" placeholder="Search by name, provider, keyword...">
+                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" id="liveSearchInput" name="search" value="{{ search_term }}" placeholder="Search by name, provider, keyword... (Press '/' to focus)">
                 </div>
             </div>
             <div class="col-md-3">
@@ -35,45 +43,93 @@
                 </select>
             </div>
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-filter"></i> Filter</button>
-                <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-outline-secondary" title="Reset"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
+                <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             </div>
         </form>
+
+        <!-- Quick Filter Chips -->
+        <div class="d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
+            <span class="small text-muted fw-semibold me-1"><i class="bi bi-lightning-charge text-warning me-1"></i>Quick Filters:</span>
+            <span class="filter-chip active" data-filter="all"><i class="bi bi-grid-fill"></i> All</span>
+            <span class="filter-chip" data-filter="Engineering"><i class="bi bi-cpu"></i> Engineering</span>
+            <span class="filter-chip" data-filter="Science"><i class="bi bi-virus"></i> Science</span>
+            <span class="filter-chip" data-filter="MBBS"><i class="bi bi-heart-pulse"></i> Medical</span>
+            <span class="filter-chip" data-filter="All India"><i class="bi bi-globe"></i> All India</span>
+        </div>
     </div>
 
-    <!-- Scholarships List -->
+    <!-- Scholarships Cards Grid -->
     {% if scholarships %}
-        <div class="row g-3">
+        <div class="row g-3" id="scholarshipsGrid">
             {% for item in scholarships %}
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4 scholarship-card-item"
+                 data-search-title="{{ item.name }}"
+                 data-search-provider="{{ item.provider }}"
+                 data-search-course="{{ item.course }}"
+                 data-search-state="{{ item.state }}">
                 <div class="card custom-card h-100 p-3 d-flex flex-column justify-content-between">
                     <div>
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-secondary">{{ item.course }}</span>
-                            <span class="badge bg-light text-dark border">{{ item.state if item.state != 'ALL' else 'All India' }}</span>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border fw-medium">{{ item.course }}</span>
+                            <div class="d-flex gap-1">
+                                <span class="badge bg-light text-dark border">{{ item.state if item.state != 'ALL' else 'All India' }}</span>
+                                {% if session.get('user_id') %}
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-2 btn-toggle-save" 
+                                        data-id="{{ item.id }}" 
+                                        data-saved="false" 
+                                        title="Bookmark this scholarship">
+                                    <i class="bi bi-bookmark"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
-                        <h5 class="fw-bold mb-1">
-                            <a href="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}" class="text-decoration-none text-dark">
+
+                        <h5 class="fw-bold mb-1 lh-sm">
+                            <a href="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}" class="text-decoration-none text-dark hover-primary">
                                 {{ item.name }}
                             </a>
                         </h5>
-                        <p class="text-muted small mb-2">{{ item.provider }}</p>
-                        <h4 class="text-primary fw-bold mb-2">
-                            {% if item.amount %}
-                                ₹{{ "{:,.0f}".format(item.amount) }}
-                            {% else %}
-                                Tuition Waiver
-                            {% endif %}
-                        </h4>
-                        <div class="small text-muted mb-3">
-                            <i class="bi bi-calendar-event me-1"></i> Deadline: <strong class="text-danger">{{ item.deadline or 'Ongoing' }}</strong>
+                        <p class="text-muted small mb-3">{{ item.provider }}</p>
+
+                        <div class="p-2 bg-light rounded-3 mb-3 border">
+                            <small class="text-muted d-block">Award Amount</small>
+                            <h4 class="text-primary fw-bold mb-0">
+                                {% if item.amount %}
+                                    ₹{{ "{:,.0f}".format(item.amount) }}
+                                {% else %}
+                                    Tuition Support
+                                {% endif %}
+                            </h4>
+                        </div>
+
+                        <div class="small text-muted mb-2 d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-calendar-event me-1"></i> Deadline:</span>
+                            <strong class="text-danger">{{ item.deadline or 'Ongoing' }}</strong>
                         </div>
                     </div>
 
                     <div class="border-top pt-3 d-flex gap-2">
+                        <!-- Quick View Button -->
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-secondary btn-quick-view" 
+                                data-name="{{ item.name }}"
+                                data-provider="{{ item.provider }}"
+                                data-amount="{% if item.amount %}₹{{ '{:,.0f}'.format(item.amount) }}{% else %}Tuition Support{% endif %}"
+                                data-course="{{ item.course }}"
+                                data-state="{{ item.state if item.state != 'ALL' else 'All India' }}"
+                                data-deadline="{{ item.deadline or 'Ongoing' }}"
+                                data-desc="{{ item.description or 'Official scholarship scheme program.' }}"
+                                data-url="{{ item.official_url }}"
+                                data-detail-url="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}"
+                                title="Quick Preview">
+                            <i class="bi bi-eye"></i> Quick View
+                        </button>
+
                         <a href="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
-                            View Requirements
+                            Details
                         </a>
+
                         <a href="{{ item.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary" title="Official Application Portal">
                             <i class="bi bi-box-arrow-up-right"></i>
                         </a>
@@ -86,7 +142,10 @@
         <div class="text-center py-5 card custom-card">
             <i class="bi bi-search fs-1 text-muted mb-2"></i>
             <h4>No Scholarships Found</h4>
-            <p class="text-muted">No records match your search criteria. Try removing some filters.</p>
+            <p class="text-muted">No records match your search criteria. Try clearing search filters.</p>
+            <div>
+                <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-sm btn-primary">Reset Filters</a>
+            </div>
         </div>
     {% endif %}
 </div>

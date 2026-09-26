@@ -5,19 +5,19 @@
 {% block content %}
 <div class="container py-4">
     <!-- Header Summary -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h2 class="fw-bold mb-1"><i class="bi bi-stars text-warning me-2"></i>Personalized Recommendations</h2>
             <p class="text-muted small mb-0">
                 Matched for <strong>{{ student.name or session.get('user_name') }}</strong> &bull; {{ student.course }} (Year {{ student.year }}) &bull; {{ student.state }}
             </p>
         </div>
-        <div class="d-flex gap-2 mt-3 mt-md-0">
+        <div class="d-flex gap-2">
             <a href="{{ url_for('views.profile_view') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="bi bi-sliders me-1"></i> Edit Profile
             </a>
             <a href="{{ url_for('views.saved_view') }}" class="btn btn-outline-primary btn-sm">
-                <i class="bi bi-bookmark-heart me-1"></i> View Saved ({{ saved_ids|length }})
+                <i class="bi bi-bookmark-heart me-1"></i> Saved ({{ saved_ids|length }})
             </a>
         </div>
     </div>
@@ -37,14 +37,14 @@
             {% for rec in recommendations %}
             <div class="col-12">
                 <div class="card custom-card p-4">
-                    <div class="row align-items-start">
+                    <div class="row align-items-start gy-3">
                         <!-- Main Details Column -->
                         <div class="col-lg-8">
                             <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                                <span class="badge bg-secondary">{{ rec.course }}</span>
-                                <span class="badge bg-info text-dark">{{ rec.state if rec.state != 'ALL' else 'All India' }}</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">{{ rec.course }}</span>
+                                <span class="badge bg-light text-dark border">{{ rec.state if rec.state != 'ALL' else 'All India' }}</span>
                                 {% if rec.category != 'ALL' %}
-                                    <span class="badge bg-dark">{{ rec.category }}</span>
+                                    <span class="badge bg-dark bg-opacity-10 text-dark border">{{ rec.category }}</span>
                                 {% endif %}
                                 {% if rec.deadline %}
                                     <span class="badge bg-light text-muted border">
@@ -67,14 +67,14 @@
                             </p>
 
                             <!-- Why You Matched Section -->
-                            <div class="p-3 bg-light rounded-3 mb-3">
-                                <h6 class="fw-bold text-success mb-2 small text-uppercase">
+                            <div class="p-3 bg-light rounded-3 mb-3 border">
+                                <h6 class="fw-bold text-success mb-2 small text-uppercase d-flex align-items-center">
                                     <i class="bi bi-check-circle-fill me-1"></i> Why You Matched:
                                 </h6>
-                                <div class="row">
+                                <div class="row g-2">
                                     {% for reason in rec.explanation.reasons %}
                                     <div class="col-md-6 reason-item text-muted">
-                                        <i class="bi bi-check-circle text-success"></i>
+                                        <i class="bi bi-check2-circle text-success"></i>
                                         <span>{{ reason }}</span>
                                     </div>
                                     {% endfor %}
@@ -94,18 +94,23 @@
                         </div>
 
                         <!-- Match Score & Actions Column -->
-                        <div class="col-lg-4 border-start-lg ps-lg-4 text-center text-lg-end d-flex flex-column justify-content-between h-100">
+                        <div class="col-lg-4 border-start-lg ps-lg-4 text-center text-lg-end d-flex flex-column justify-content-between">
                             <div>
                                 <div class="mb-3">
                                     <span class="small text-muted d-block mb-1">Overall Match Score</span>
                                     {% set pct = rec.match_percentage %}
                                     <span class="match-badge {% if pct >= 80 %}badge-high{% elif pct >= 65 %}badge-medium{% else %}badge-standard{% endif %}">
-                                        <i class="bi bi-lightning-charge-fill me-1"></i> {{ pct }}% Relevant
+                                        <i class="bi bi-patch-check-fill"></i> {{ pct }}% Relevant
                                     </span>
+                                    
+                                    <!-- Visual Match Progress Meter -->
+                                    <div class="match-progress-container">
+                                        <div class="match-progress-bar {% if pct >= 80 %}match-progress-high{% elif pct >= 65 %}match-progress-medium{% else %}match-progress-standard{% endif %}" style="width: {{ pct }}%;"></div>
+                                    </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <span class="small text-muted d-block">Award Amount</span>
+                                <div class="p-3 bg-light rounded-3 mb-3 border text-center text-lg-end">
+                                    <small class="text-muted d-block">Award Amount</small>
                                     <h3 class="fw-bold text-primary mb-0">
                                         {% if rec.amount %}
                                             ₹{{ "{:,.0f}".format(rec.amount) }}
@@ -115,8 +120,8 @@
                                     </h3>
                                 </div>
 
-                                <!-- Breakdown Pills -->
-                                <div class="d-flex justify-content-lg-end gap-1 flex-wrap mb-4 small">
+                                <!-- Breakdown Badges -->
+                                <div class="d-flex justify-content-center justify-content-lg-end gap-1 flex-wrap mb-4 small">
                                     <span class="badge bg-light text-secondary border">Rule Score: {{ ((rec.rule_score * 100)|round)|int }}%</span>
                                     <span class="badge bg-light text-secondary border">ML Similarity: {{ ((rec.ml_score * 100)|round)|int }}%</span>
                                 </div>
@@ -124,7 +129,7 @@
 
                             <div class="d-flex flex-column gap-2">
                                 <a href="{{ rec.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary fw-semibold">
-                                    <i class="bi bi-box-arrow-up-right me-1"></i> Official Application
+                                    <i class="bi bi-box-arrow-up-right me-1"></i> Official Portal
                                 </a>
                                 <div class="d-flex gap-2">
                                     <a href="{{ url_for('views.scholarship_detail', scholarship_id=rec.id) }}" class="btn btn-outline-secondary btn-sm flex-grow-1">

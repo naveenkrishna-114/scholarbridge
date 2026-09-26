@@ -4,13 +4,13 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h2 class="fw-bold mb-1"><i class="bi bi-bookmark-heart-fill text-danger me-2"></i>Saved Scholarships</h2>
             <p class="text-muted small mb-0">Track and monitor your bookmarked opportunities</p>
         </div>
         <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-outline-primary btn-sm">
-            <i class="bi bi-search me-1"></i> Browse More
+            <i class="bi bi-compass me-1"></i> Browse More
         </a>
     </div>
 
@@ -21,27 +21,46 @@
                 <div class="card custom-card h-100 p-3 d-flex flex-column justify-content-between">
                     <div>
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge bg-primary">{{ item.course }}</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">{{ item.course }}</span>
                             <span class="text-danger small fw-semibold">
                                 <i class="bi bi-clock me-1"></i> {{ item.deadline or 'Open' }}
                             </span>
                         </div>
-                        <h5 class="fw-bold mb-1">
+                        <h5 class="fw-bold mb-1 lh-sm">
                             <a href="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}" class="text-decoration-none text-dark">
                                 {{ item.name }}
                             </a>
                         </h5>
                         <p class="text-muted small mb-2">{{ item.provider }}</p>
-                        <h4 class="text-primary fw-bold mb-3">
-                            {% if item.amount %}
-                                ₹{{ "{:,.0f}".format(item.amount) }}
-                            {% else %}
-                                Tuition Aid
-                            {% endif %}
-                        </h4>
+
+                        <div class="p-2 bg-light rounded-3 mb-3 border">
+                            <small class="text-muted d-block">Award Amount</small>
+                            <h4 class="text-primary fw-bold mb-0">
+                                {% if item.amount %}
+                                    ₹{{ "{:,.0f}".format(item.amount) }}
+                                {% else %}
+                                    Tuition Aid
+                                {% endif %}
+                            </h4>
+                        </div>
                     </div>
 
                     <div class="border-top pt-3 d-flex gap-2">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-secondary btn-quick-view" 
+                                data-name="{{ item.name }}"
+                                data-provider="{{ item.provider }}"
+                                data-amount="{% if item.amount %}₹{{ '{:,.0f}'.format(item.amount) }}{% else %}Tuition Support{% endif %}"
+                                data-course="{{ item.course }}"
+                                data-state="{{ item.state if item.state != 'ALL' else 'All India' }}"
+                                data-deadline="{{ item.deadline or 'Ongoing' }}"
+                                data-desc="{{ item.description or 'Official scholarship scheme program.' }}"
+                                data-url="{{ item.official_url }}"
+                                data-detail-url="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}"
+                                title="Quick Preview">
+                            <i class="bi bi-eye"></i> Quick View
+                        </button>
+
                         <a href="{{ item.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary flex-grow-1">
                             <i class="bi bi-box-arrow-up-right me-1"></i> Apply
                         </a>

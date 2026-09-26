@@ -4,12 +4,12 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-gradient py-5 mb-5 text-center text-lg-start">
+<section class="hero-gradient text-center text-lg-start">
     <div class="container">
-        <div class="row align-items-center gy-4">
+        <div class="row align-items-center gy-5">
             <div class="col-lg-7">
                 <span class="badge bg-primary bg-opacity-25 text-primary-emphasis px-3 py-2 rounded-pill mb-3 fw-semibold border border-primary border-opacity-25">
-                    <i class="bi bi-cpu-fill me-1"></i> Hybrid ML & Rule-Based Matching Engine
+                    <span class="pulse-dot me-2"></span> Hybrid ML & Rule-Based Matching Engine
                 </span>
                 <h1 class="display-4 fw-bold lh-sm mb-3">
                     Discover Scholarships Tailored to Your Academic Journey
@@ -17,10 +17,24 @@
                 <p class="lead text-light text-opacity-75 mb-4">
                     Stop sifting through hundreds of scattered portals. Our intelligent system analyzes your course, academic merit, financial background, and state domicile to deliver ranked opportunities with complete transparency.
                 </p>
+
+                <!-- Quick Search Bar in Hero -->
+                <form method="GET" action="{{ url_for('views.explore_scholarships') }}" class="mb-4">
+                    <div class="p-2 bg-white bg-opacity-10 rounded-pill border border-white border-opacity-20 d-flex gap-2 backdrop-blur shadow-sm">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-0 text-white-50"><i class="bi bi-search"></i></span>
+                            <input type="text" name="search" class="form-control bg-transparent border-0 text-white placeholder-white-50" placeholder="Search by course, merit, state (e.g. B.Tech, Tamil Nadu, Merit)..." style="color: white !important;">
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 fw-semibold text-nowrap">
+                            Search
+                        </button>
+                    </div>
+                </form>
+
                 <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
                     {% if session.get('user_id') %}
                         <a href="{{ url_for('views.recommendations_view') }}" class="btn btn-primary btn-lg px-4 shadow">
-                            <i class="bi bi-stars me-2"></i>View My Recommendations
+                            <i class="bi bi-stars me-2"></i>View My Matches
                         </a>
                         <a href="{{ url_for('views.profile_view') }}" class="btn btn-outline-light btn-lg px-4">
                             <i class="bi bi-pencil-square me-2"></i>Update Profile
@@ -36,29 +50,33 @@
                 </div>
             </div>
             <div class="col-lg-5 text-center">
-                <div class="p-4 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-10 backdrop-blur shadow-lg">
-                    <div class="d-flex align-items-center justify-content-between border-bottom border-light border-opacity-10 pb-3 mb-3 text-start">
+                <div class="p-4 bg-white bg-opacity-10 rounded-4 border border-white border-opacity-10 backdrop-blur shadow-lg text-start">
+                    <div class="d-flex align-items-center justify-content-between border-bottom border-light border-opacity-10 pb-3 mb-3">
                         <div>
-                            <h6 class="mb-0 text-white">Live Matching Engine</h6>
+                            <h6 class="mb-0 text-white fw-bold">Live AI Matching Feed</h6>
                             <small class="text-white-50">Content-Based ML + Hard Filters</small>
                         </div>
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active</span>
+                        <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1">
+                            <i class="bi bi-check-circle me-1"></i>Active Engine
+                        </span>
                     </div>
+
                     <div class="card custom-card p-3 mb-3 text-start bg-dark text-white border-secondary">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge bg-primary">Tamil Nadu &bull; B.Tech</span>
-                            <span class="text-success fw-bold">92% Match</span>
+                            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">Tamil Nadu &bull; B.Tech</span>
+                            <span class="text-success fw-bold"><i class="bi bi-patch-check-fill me-1"></i>95% Match</span>
                         </div>
-                        <h6 class="text-truncate mb-1">Tamil Nadu Chief Minister Merit Scholarship</h6>
-                        <small class="text-light text-opacity-75">Award: ₹30,000 &bull; Domicile Matched</small>
+                        <h6 class="text-truncate mb-1 fw-bold">Tamil Nadu Chief Minister Merit Award</h6>
+                        <small class="text-light text-opacity-75">Award: ₹30,000 &bull; Domicile & Course Qualified</small>
                     </div>
+
                     <div class="card custom-card p-3 text-start bg-dark text-white border-secondary">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge bg-primary">All India &bull; Engineering</span>
-                            <span class="text-success fw-bold">88% Match</span>
+                            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25">All India &bull; Engineering</span>
+                            <span class="text-success fw-bold"><i class="bi bi-patch-check-fill me-1"></i>92% Match</span>
                         </div>
-                        <h6 class="text-truncate mb-1">Reliance Foundation Undergraduate Award</h6>
-                        <small class="text-light text-opacity-75">Award: ₹2,00,000 &bull; Merit Exceeded</small>
+                        <h6 class="text-truncate mb-1 fw-bold">Reliance Foundation Undergraduate Grant</h6>
+                        <small class="text-light text-opacity-75">Award: ₹2,00,000 &bull; High Academic Merit</small>
                     </div>
                 </div>
             </div>
@@ -66,11 +84,36 @@
     </div>
 </section>
 
+<!-- Floating Stats Counter -->
+<div class="container mb-5">
+    <div class="stats-banner">
+        <div class="row g-0">
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-number text-primary">42+</div>
+                <div class="small fw-semibold text-muted">Curated Schemes</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-number text-success">₹50L+</div>
+                <div class="small fw-semibold text-muted">Total Grant Pool</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-number text-indigo" style="color: #6366f1;">95%</div>
+                <div class="small fw-semibold text-muted">ML Match Precision</div>
+            </div>
+            <div class="col-6 col-md-3 stat-item">
+                <div class="stat-number text-warning">100%</div>
+                <div class="small fw-semibold text-muted">Verified Portal URLs</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- How It Works Section -->
 <section class="container py-4 mb-5">
     <div class="text-center mb-5">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Architectural Workflow</span>
         <h2 class="fw-bold">How ScholarMatch AI Works</h2>
-        <p class="text-muted">A three-stage transparent discovery architecture designed for student success</p>
+        <p class="text-muted">A three-stage transparent discovery architecture engineered for precision</p>
     </div>
     <div class="row g-4">
         <div class="col-md-4">
@@ -79,7 +122,7 @@
                     <i class="bi bi-person-vcard fs-2"></i>
                 </div>
                 <h5 class="fw-bold mb-2">1. Build Student Profile</h5>
-                <p class="text-muted small">
+                <p class="text-muted small mb-0">
                     Provide basic academic marks (percentage/CGPA), enrolled course, study year, family income bracket, and state domicile.
                 </p>
             </div>
@@ -90,7 +133,7 @@
                     <i class="bi bi-funnel fs-2"></i>
                 </div>
                 <h5 class="fw-bold mb-2">2. Strict Eligibility Gate</h5>
-                <p class="text-muted small">
+                <p class="text-muted small mb-0">
                     Rule-based filters eliminate ineligible grants immediately so you never waste time applying for schemes you do not qualify for.
                 </p>
             </div>
@@ -101,9 +144,60 @@
                     <i class="bi bi-graph-up-arrow fs-2"></i>
                 </div>
                 <h5 class="fw-bold mb-2">3. Explainable Ranking</h5>
-                <p class="text-muted small">
-                    ML similarity & multi-attribute weighting rank the top opportunities, explaining exactly why you matched with verified portal links.
+                <p class="text-muted small mb-0">
+                    TF-IDF similarity & multi-attribute weighting rank top opportunities, explaining exactly why you matched with verified portal links.
                 </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Accordion Section -->
+<section class="container py-4 mb-5">
+    <div class="text-center mb-4">
+        <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill fw-semibold mb-2">Help Center</span>
+        <h2 class="fw-bold">Frequently Asked Questions</h2>
+        <p class="text-muted">Answers to common questions about eligibility, application deadlines, and matching</p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="accordion shadow-sm rounded-4 overflow-hidden" id="faqAccordion">
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="faqOne">
+                        <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true">
+                            <i class="bi bi-shield-check text-primary me-2"></i> Is ScholarMatch AI an official scholarship granting authority?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary small">
+                            No. ScholarMatch AI is an intelligent recommendation and discovery assistant. We match your academic and demographic profile to officially published schemes and provide direct links to the official provider portals where applications must be submitted.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="faqTwo">
+                        <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            <i class="bi bi-calculator text-primary me-2"></i> How is my match score calculated?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary small">
+                            We use a hybrid pipeline combining hard eligibility checks (income limits, degree match, domicile, category) with a TF-IDF Natural Language Processing model that computes cosine similarity between your profile and opportunity descriptions.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header" id="faqThree">
+                        <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            <i class="bi bi-clock-history text-primary me-2"></i> What happens when a scholarship deadline passes?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-secondary small">
+                            Expired scholarships are automatically filtered out by our real-time deadline validator, ensuring students only view open and active funding opportunities.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -111,13 +205,15 @@
 
 <!-- Direct CTA Box -->
 <section class="container mb-5">
-    <div class="bg-primary text-white p-5 rounded-4 shadow-sm text-center">
-        <h2 class="fw-bold mb-3">Ready to find your eligible scholarships?</h2>
-        <p class="lead mb-4 text-white-50">Join students already discovering grants and merit awards.</p>
-        <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-light btn-lg px-4 me-2">Browse All Scholarships</a>
-        {% if not session.get('user_id') %}
-            <a href="{{ url_for('views.register_view') }}" class="btn btn-outline-light btn-lg px-4">Register Now</a>
-        {% endif %}
+    <div class="p-5 rounded-4 shadow-sm text-center text-white" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+        <h2 class="fw-bold mb-3">Ready to Discover Scholarships for Your College?</h2>
+        <p class="lead mb-4 text-white-50">Join students discovering verified state, national, and foundation grants.</p>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-primary btn-lg px-4">Browse Directory</a>
+            {% if not session.get('user_id') %}
+                <a href="{{ url_for('views.register_view') }}" class="btn btn-outline-light btn-lg px-4">Register as Student</a>
+            {% endif %}
+        </div>
     </div>
 </section>
 {% endblock %}

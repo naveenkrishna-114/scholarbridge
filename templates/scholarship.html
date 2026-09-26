@@ -6,24 +6,24 @@
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a href="{{ url_for('views.explore_scholarships') }}">Scholarships</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('views.explore_scholarships') }}" class="text-decoration-none">Directory</a></li>
             <li class="breadcrumb-item active" aria-current="page">{{ scholarship.name }}</li>
         </ol>
     </nav>
 
     <div class="row g-4">
-        <!-- Main details -->
+        <!-- Main Details -->
         <div class="col-lg-8">
             <div class="card custom-card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                        <span class="badge bg-primary mb-2">{{ scholarship.provider }}</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 mb-2">{{ scholarship.provider }}</span>
                         <h2 class="fw-bold mb-1">{{ scholarship.name }}</h2>
                     </div>
                     {% if scholarship.status == 'ACTIVE' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2"><i class="bi bi-check-circle me-1"></i>Active</span>
                     {% else %}
-                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>{{ scholarship.status }}</span>
+                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2"><i class="bi bi-x-circle me-1"></i>{{ scholarship.status }}</span>
                     {% endif %}
                 </div>
 
@@ -32,40 +32,42 @@
                 </p>
 
                 <!-- Requirements Specifications -->
-                <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">Eligibility Requirements</h5>
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">
+                    <i class="bi bi-card-checklist me-1"></i> Eligibility Requirements
+                </h5>
                 <div class="row g-3 mb-4">
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">Eligible Course</span>
                             <strong>{{ scholarship.course if scholarship.course != 'ALL' else 'Open to All Courses' }}</strong>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">Minimum Academic Percentage</span>
                             <strong>{{ scholarship.min_percentage }}% or equivalent</strong>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">Maximum Family Income</span>
                             <strong>₹{{ "{:,.0f}".format(scholarship.max_income) if scholarship.max_income is not none else 'No Limit' }} / year</strong>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">State Domicile</span>
                             <strong>{{ scholarship.state if scholarship.state != 'ALL' else 'All India Resident' }}</strong>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">Gender Criteria</span>
                             <strong>{{ scholarship.gender if scholarship.gender != 'ALL' else 'All Genders' }}</strong>
                         </div>
                     </div>
                     <div class="col-sm-6">
-                        <div class="p-3 bg-light rounded">
+                        <div class="p-3 bg-light rounded-3 border">
                             <span class="text-muted small d-block">Social Category</span>
                             <strong>{{ scholarship.category if scholarship.category != 'ALL' else 'All Categories' }}</strong>
                         </div>
@@ -73,7 +75,9 @@
                 </div>
 
                 {% if scholarship.other_requirements %}
-                <h5 class="fw-bold text-primary border-bottom pb-2 mb-2">Additional Provider Requirements</h5>
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-2">
+                    <i class="bi bi-info-circle me-1"></i> Additional Provider Guidelines
+                </h5>
                 <p class="text-secondary small mb-4">
                     {{ scholarship.other_requirements }}
                 </p>
@@ -100,32 +104,38 @@
 
                 <ul class="list-unstyled small mb-4 border-top border-bottom py-3">
                     <li class="mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Application Deadline:</span>
+                        <span class="text-muted"><i class="bi bi-calendar-event me-1"></i> Application Deadline:</span>
                         <strong class="text-danger">{{ scholarship.deadline or 'Not specified' }}</strong>
                     </li>
                     <li class="mb-2 d-flex justify-content-between">
-                        <span class="text-muted">Start Date:</span>
+                        <span class="text-muted"><i class="bi bi-calendar-check me-1"></i> Start Date:</span>
                         <span>{{ scholarship.start_date or 'Ongoing' }}</span>
                     </li>
                     <li class="d-flex justify-content-between">
-                        <span class="text-muted">Last Verified:</span>
+                        <span class="text-muted"><i class="bi bi-shield-check me-1"></i> Last Verified:</span>
                         <span>{{ scholarship.last_verified or 'Recently' }}</span>
                     </li>
                 </ul>
 
                 <a href="{{ scholarship.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-100 py-2 mb-2 fw-semibold">
-                    <i class="bi bi-box-arrow-up-right me-1"></i> Visit Official Application Portal
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Official Application Portal
                 </a>
 
-                {% if session.get('user_id') %}
-                <button class="btn btn-outline-secondary w-100 btn-toggle-save" data-id="{{ scholarship.id }}" data-saved="{{ 'true' if is_saved else 'false' }}">
-                    {% if is_saved %}
-                        <i class="bi bi-bookmark-check-fill text-primary"></i> Saved to Bookmarks
-                    {% else %}
-                        <i class="bi bi-bookmark"></i> Bookmark Scholarship
+                <div class="d-flex gap-2">
+                    {% if session.get('user_id') %}
+                    <button class="btn btn-outline-secondary flex-grow-1 btn-toggle-save" data-id="{{ scholarship.id }}" data-saved="{{ 'true' if is_saved else 'false' }}">
+                        {% if is_saved %}
+                            <i class="bi bi-bookmark-check-fill text-primary"></i> Saved
+                        {% else %}
+                            <i class="bi bi-bookmark"></i> Save
+                        {% endif %}
+                    </button>
                     {% endif %}
-                </button>
-                {% endif %}
+
+                    <button class="btn btn-outline-secondary {% if not session.get('user_id') %}w-100{% endif %} btn-share-link" data-share-url="{{ request.url }}" title="Share or Copy Link">
+                        <i class="bi bi-share"></i> Share
+                    </button>
+                </div>
             </div>
         </div>
     </div>
