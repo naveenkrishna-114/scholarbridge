@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}{{ scholarship.name }} | ScholarMatch AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{{ url_for('views.explore_scholarships') }}">Scholarships</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ scholarship.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- Main details -->
+        <div class="col-lg-8">
+            <div class="card custom-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="badge bg-primary mb-2">{{ scholarship.provider }}</span>
+                        <h2 class="fw-bold mb-1">{{ scholarship.name }}</h2>
+                    </div>
+                    {% if scholarship.status == 'ACTIVE' %}
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Active</span>
+                    {% else %}
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>{{ scholarship.status }}</span>
+                    {% endif %}
+                </div>
+
+                <p class="lead text-secondary fs-6 mb-4">
+                    {{ scholarship.description }}
+                </p>
+
+                <!-- Requirements Specifications -->
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">Eligibility Requirements</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">Eligible Course</span>
+                            <strong>{{ scholarship.course if scholarship.course != 'ALL' else 'Open to All Courses' }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">Minimum Academic Percentage</span>
+                            <strong>{{ scholarship.min_percentage }}% or equivalent</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">Maximum Family Income</span>
+                            <strong>₹{{ "{:,.0f}".format(scholarship.max_income) if scholarship.max_income is not none else 'No Limit' }} / year</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">State Domicile</span>
+                            <strong>{{ scholarship.state if scholarship.state != 'ALL' else 'All India Resident' }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">Gender Criteria</span>
+                            <strong>{{ scholarship.gender if scholarship.gender != 'ALL' else 'All Genders' }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded">
+                            <span class="text-muted small d-block">Social Category</span>
+                            <strong>{{ scholarship.category if scholarship.category != 'ALL' else 'All Categories' }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% if scholarship.other_requirements %}
+                <h5 class="fw-bold text-primary border-bottom pb-2 mb-2">Additional Provider Requirements</h5>
+                <p class="text-secondary small mb-4">
+                    {{ scholarship.other_requirements }}
+                </p>
+                {% endif %}
+
+                <!-- Verification Notice -->
+                <div class="disclaimer-box">
+                    <strong>Official Information Disclaimer:</strong> Scholarship criteria, quotas, and deadlines are subject to change by the scholarship provider. Always verify terms on the official application link prior to applying.
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar / Action Card -->
+        <div class="col-lg-4">
+            <div class="card custom-card p-4 sticky-top" style="top: 80px;">
+                <span class="text-muted small d-block mb-1">Scholarship Grant</span>
+                <h2 class="fw-bold text-primary mb-3">
+                    {% if scholarship.amount %}
+                        ₹{{ "{:,.0f}".format(scholarship.amount) }}
+                    {% else %}
+                        Tuition Waiver
+                    {% endif %}
+                </h2>
+
+                <ul class="list-unstyled small mb-4 border-top border-bottom py-3">
+                    <li class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Application Deadline:</span>
+                        <strong class="text-danger">{{ scholarship.deadline or 'Not specified' }}</strong>
+                    </li>
+                    <li class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Start Date:</span>
+                        <span>{{ scholarship.start_date or 'Ongoing' }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between">
+                        <span class="text-muted">Last Verified:</span>
+                        <span>{{ scholarship.last_verified or 'Recently' }}</span>
+                    </li>
+                </ul>
+
+                <a href="{{ scholarship.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-100 py-2 mb-2 fw-semibold">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Visit Official Application Portal
+                </a>
+
+                {% if session.get('user_id') %}
+                <button class="btn btn-outline-secondary w-100 btn-toggle-save" data-id="{{ scholarship.id }}" data-saved="{{ 'true' if is_saved else 'false' }}">
+                    {% if is_saved %}
+                        <i class="bi bi-bookmark-check-fill text-primary"></i> Saved to Bookmarks
+                    {% else %}
+                        <i class="bi bi-bookmark"></i> Bookmark Scholarship
+                    {% endif %}
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Personalized Scholarship Recommendation System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card custom-card p-4 shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary mx-auto d-flex align-items-center justify-content-center mb-2" style="width: 56px; height: 56px;">
+                        <i class="bi bi-person-fill fs-2"></i>
+                    </div>
+                    <h3 class="fw-bold">Student Login</h3>
+                    <p class="text-muted small">Sign in to access your recommendations and bookmarks</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('views.login_post') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label small fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="student@example.com">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label small fw-semibold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3 fw-semibold">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                    </button>
+                </form>
+
+                <div class="text-center small border-top pt-3 text-muted">
+                    Don't have an account? <a href="{{ url_for('views.register_view') }}" class="fw-semibold text-primary">Register here</a>
+                </div>
+
+                <!-- Demo Credentials helper for Hackathon evaluation -->
+                <div class="mt-4 p-3 bg-light rounded border text-start small">
+                    <strong><i class="bi bi-key-fill text-warning me-1"></i> Demo Evaluation Accounts:</strong>
+                    <div class="mt-1 text-muted">Student: <code>aarav.sharma@example.com</code> / <code>Password123!</code></div>
+                    <div class="text-muted">Admin: <code>vikram.admin@example.com</code> / <code>Password123!</code></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

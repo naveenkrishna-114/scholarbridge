@@ -1,0 +1,6 @@
+name,email,role,age,gender,state,district,course,branch,year,percentage,cgpa,income,category,disability_status,achievements
+Aarav Sharma,aarav.sharma@example.com,student,20,Male,Tamil Nadu,Chennai,B.Tech,Computer Science,2,84.0,8.7,200000,General,No,"Hackathon winner, College coding club lead"
+Priya Patel,priya.patel@example.com,student,19,Female,Maharashtra,Pune,B.Tech,Information Technology,1,88.5,9.2,350000,OBC,No,"National Science Olympiad finalist"
+Rahul Verma,rahul.verma@example.com,student,21,Male,Uttar Pradesh,Lucknow,B.Sc,Physics,3,68.0,7.1,180000,SC,No,"State level badminton player"
+Ananya Iyer,ananya.iyer@example.com,student,20,Female,Tamil Nadu,Coimbatore,B.Tech,Computer Science,3,82.0,8.5,150000,General,No,"Published research paper in IEEE student conference"
+Vikram Singh,vikram.admin@example.com,admin,35,Male,Delhi,New Delhi,ALL,Administration,1,90.0,,0,General,No,"System Administrator"

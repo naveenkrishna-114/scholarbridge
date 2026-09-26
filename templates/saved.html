@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Saved Scholarships | ScholarMatch AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-bookmark-heart-fill text-danger me-2"></i>Saved Scholarships</h2>
+            <p class="text-muted small mb-0">Track and monitor your bookmarked opportunities</p>
+        </div>
+        <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-search me-1"></i> Browse More
+        </a>
+    </div>
+
+    {% if saved_scholarships %}
+        <div class="row g-3">
+            {% for item in saved_scholarships %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card custom-card h-100 p-3 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary">{{ item.course }}</span>
+                            <span class="text-danger small fw-semibold">
+                                <i class="bi bi-clock me-1"></i> {{ item.deadline or 'Open' }}
+                            </span>
+                        </div>
+                        <h5 class="fw-bold mb-1">
+                            <a href="{{ url_for('views.scholarship_detail', scholarship_id=item.id) }}" class="text-decoration-none text-dark">
+                                {{ item.name }}
+                            </a>
+                        </h5>
+                        <p class="text-muted small mb-2">{{ item.provider }}</p>
+                        <h4 class="text-primary fw-bold mb-3">
+                            {% if item.amount %}
+                                ₹{{ "{:,.0f}".format(item.amount) }}
+                            {% else %}
+                                Tuition Aid
+                            {% endif %}
+                        </h4>
+                    </div>
+
+                    <div class="border-top pt-3 d-flex gap-2">
+                        <a href="{{ item.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary flex-grow-1">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Apply
+                        </a>
+                        <button class="btn btn-sm btn-outline-danger btn-toggle-save" data-id="{{ item.id }}" data-saved="true" title="Remove bookmark">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 card custom-card">
+            <i class="bi bi-bookmark fs-1 text-muted mb-2"></i>
+            <h4>No Bookmarked Scholarships</h4>
+            <p class="text-muted col-md-5 mx-auto">
+                You haven't saved any scholarships yet. Explore our directory or check your personalized recommendations to bookmark schemes.
+            </p>
+            <div>
+                <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-primary">Browse Directory</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

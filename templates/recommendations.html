@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Personalized Recommendations | ScholarMatch AI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Summary -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-stars text-warning me-2"></i>Personalized Recommendations</h2>
+            <p class="text-muted small mb-0">
+                Matched for <strong>{{ student.name or session.get('user_name') }}</strong> &bull; {{ student.course }} (Year {{ student.year }}) &bull; {{ student.state }}
+            </p>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('views.profile_view') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-sliders me-1"></i> Edit Profile
+            </a>
+            <a href="{{ url_for('views.saved_view') }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-bookmark-heart me-1"></i> View Saved ({{ saved_ids|length }})
+            </a>
+        </div>
+    </div>
+
+    <!-- Transparency Disclaimer Alert -->
+    <div class="disclaimer-box mb-4">
+        <div class="d-flex align-items-start">
+            <i class="bi bi-shield-exclamation text-primary fs-5 me-2 mt-1"></i>
+            <div>
+                <strong>Transparency & Verification Notice:</strong> The match scores below are calculated using hybrid multi-attribute rules and content-based semantic matching. Recommendations do not guarantee official approval. Please review all required certificates and deadlines on the official application portal.
+            </div>
+        </div>
+    </div>
+
+    {% if recommendations %}
+        <div class="row g-4">
+            {% for rec in recommendations %}
+            <div class="col-12">
+                <div class="card custom-card p-4">
+                    <div class="row align-items-start">
+                        <!-- Main Details Column -->
+                        <div class="col-lg-8">
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                <span class="badge bg-secondary">{{ rec.course }}</span>
+                                <span class="badge bg-info text-dark">{{ rec.state if rec.state != 'ALL' else 'All India' }}</span>
+                                {% if rec.category != 'ALL' %}
+                                    <span class="badge bg-dark">{{ rec.category }}</span>
+                                {% endif %}
+                                {% if rec.deadline %}
+                                    <span class="badge bg-light text-muted border">
+                                        <i class="bi bi-calendar-event me-1"></i> Deadline: {{ rec.deadline }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <h4 class="fw-bold text-dark mb-1">
+                                <a href="{{ url_for('views.scholarship_detail', scholarship_id=rec.id) }}" class="text-decoration-none text-dark">
+                                    {{ rec.name }}
+                                </a>
+                            </h4>
+                            <div class="text-muted small mb-3">
+                                Provided by <strong>{{ rec.provider }}</strong>
+                            </div>
+
+                            <p class="text-secondary small mb-3">
+                                {{ rec.description }}
+                            </p>
+
+                            <!-- Why You Matched Section -->
+                            <div class="p-3 bg-light rounded-3 mb-3">
+                                <h6 class="fw-bold text-success mb-2 small text-uppercase">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Why You Matched:
+                                </h6>
+                                <div class="row">
+                                    {% for reason in rec.explanation.reasons %}
+                                    <div class="col-md-6 reason-item text-muted">
+                                        <i class="bi bi-check-circle text-success"></i>
+                                        <span>{{ reason }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Potential Verification Items -->
+                            {% if rec.explanation.verification_items %}
+                            <div class="mb-3">
+                                {% for v in rec.explanation.verification_items %}
+                                <div class="verification-item">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> {{ v }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Match Score & Actions Column -->
+                        <div class="col-lg-4 border-start-lg ps-lg-4 text-center text-lg-end d-flex flex-column justify-content-between h-100">
+                            <div>
+                                <div class="mb-3">
+                                    <span class="small text-muted d-block mb-1">Overall Match Score</span>
+                                    {% set pct = rec.match_percentage %}
+                                    <span class="match-badge {% if pct >= 80 %}badge-high{% elif pct >= 65 %}badge-medium{% else %}badge-standard{% endif %}">
+                                        <i class="bi bi-lightning-charge-fill me-1"></i> {{ pct }}% Relevant
+                                    </span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <span class="small text-muted d-block">Award Amount</span>
+                                    <h3 class="fw-bold text-primary mb-0">
+                                        {% if rec.amount %}
+                                            ₹{{ "{:,.0f}".format(rec.amount) }}
+                                        {% else %}
+                                            Tuition Aid
+                                        {% endif %}
+                                    </h3>
+                                </div>
+
+                                <!-- Breakdown Pills -->
+                                <div class="d-flex justify-content-lg-end gap-1 flex-wrap mb-4 small">
+                                    <span class="badge bg-light text-secondary border">Rule Score: {{ ((rec.rule_score * 100)|round)|int }}%</span>
+                                    <span class="badge bg-light text-secondary border">ML Similarity: {{ ((rec.ml_score * 100)|round)|int }}%</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column gap-2">
+                                <a href="{{ rec.official_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary fw-semibold">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i> Official Application
+                                </a>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('views.scholarship_detail', scholarship_id=rec.id) }}" class="btn btn-outline-secondary btn-sm flex-grow-1">
+                                        <i class="bi bi-info-circle me-1"></i> Details
+                                    </a>
+                                    <button class="btn btn-outline-secondary btn-sm btn-toggle-save flex-grow-1" data-id="{{ rec.id }}" data-saved="{{ 'true' if rec.id in saved_ids else 'false' }}">
+                                        {% if rec.id in saved_ids %}
+                                            <i class="bi bi-bookmark-check-fill text-primary"></i> Saved
+                                        {% else %}
+                                            <i class="bi bi-bookmark"></i> Save
+                                        {% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 card custom-card">
+            <i class="bi bi-emoji-neutral fs-1 text-muted mb-2"></i>
+            <h4>No Matching Scholarships Found</h4>
+            <p class="text-muted col-md-6 mx-auto">
+                Based on your current profile parameters, none of the active schemes in the directory met the strict eligibility criteria. Try updating your profile details.
+            </p>
+            <div>
+                <a href="{{ url_for('views.profile_view') }}" class="btn btn-primary">Update Profile</a>
+                <a href="{{ url_for('views.explore_scholarships') }}" class="btn btn-outline-secondary ms-2">Browse All Scholarships</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
